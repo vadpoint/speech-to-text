@@ -1,0 +1,125 @@
+{
+  "name": "Speech to text",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "824c2fd9-a2a6-41c4-8578-48dfa63601ea",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        368
+      ],
+      "id": "69f2d87f-502a-4631-9c0e-9246a46981a8",
+      "name": "Webhook",
+      "webhookId": "824c2fd9-a2a6-41c4-8578-48dfa63601ea",
+      "alwaysOutputData": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/audio/transcriptions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "whisper-large-v3-turbo"
+            },
+            {
+              "name": "response_format",
+              "value": "text"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "=file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        928,
+        368
+      ],
+      "id": "84b14dbd-a61a-441b-bd75-4a5c6c0d3f0e",
+      "name": "HTTP Request",
+      "credentials": {
+        "groqApi": {
+          "id": "1TGkRB1jYX6zG8eU",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/plain"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1168,
+        368
+      ],
+      "id": "e63a1be0-ba4e-404f-9265-8bf1a67520b0",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "399c1a37-d1c9-49a8-bad8-a18c05d13dd8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9d91b5b48cee063f757f67eac73faa7d2cdae20cde0255600d717651d165d38d"
+  },
+  "id": "IuvwOzG2WGQVSANo",
+  "tags": []
+}
