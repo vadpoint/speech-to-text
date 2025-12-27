@@ -26,7 +26,7 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 ## 🛠 Installation
 
 ### 1. n8n Workflow
-1. Import `Speech to text.json` into your n8n instance.
+1. Import `n8n_voice_to_text.json` into your n8n instance.
 2. Configure the **HTTP Request** node:
    - Use your Groq API credentials.
    - The workflow uses `whisper-large-v3-turbo`.
