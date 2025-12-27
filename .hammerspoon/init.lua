@@ -7,7 +7,8 @@
 -- GLOBAL TABLE to prevent Garbage Collection (The #1 cause of "stopping after a while")
 _G.pttVoice = _G.pttVoice or {}
 
-local recBin  = "/Users/onetiger/coreaudio-rec/ptt_rec"
+local home = os.getenv("HOME")
+local recBin  = home .. "/coreaudio-rec/ptt_rec"
 local ffmpeg  = "/usr/local/bin/ffmpeg"
 local curlBin = "/usr/bin/curl"
 

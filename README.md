@@ -36,7 +36,7 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 1. The script is located in `.hammerspoon/init.lua`.
 2. Open it and update the following variables:
    - `webhook`: Paste your n8n webhook URL here.
-   - `recBin`: Path to your recording CLI tool (default: `/Users/onetiger/coreaudio-rec/ptt_rec`).
+   - `recBin`: Path to your recording CLI tool (default: `~/coreaudio-rec/ptt_rec`).
    - `ffmpeg`: Path to your ffmpeg binary (default: `/usr/local/bin/ffmpeg`).
 3. Copy the content to your `~/.hammerspoon/init.lua` or simply link the folder.
 4. Reload Hammerspoon configuration.
