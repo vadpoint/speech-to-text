@@ -1,5 +1,3 @@
 .DS_Store
 *.wav
 *.opus
-/tmp/voice.wav
-/tmp/voice.opus
