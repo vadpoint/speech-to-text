@@ -26,20 +26,14 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 ## 🛠 Installation
 
 ### 1. n8n Workflow
-1. Import `n8n_voice_to_text.json` into your n8n instance.
-2. Configure the **HTTP Request** node:
-   - Use your Groq API credentials.
-   - The workflow uses `whisper-large-v3-turbo`.
-3. Activate the workflow and copy the **Production Webhook URL**.
+1. Import `n8n_voice_to_text.json`.
+2. Configure **Groq API** credentials in the HTTP Request node.
+3. Copy your **Production Webhook URL**.
 
-### 2. Hammerspoon Script
-1. The script is located in `.hammerspoon/init.lua`.
-2. Open it and update the following variables:
-   - `webhook`: Paste your n8n webhook URL here.
-   - `recBin`: Path to your recording CLI tool (default: `~/coreaudio-rec/ptt_rec`).
-   - `ffmpeg`: Path to your ffmpeg binary (default: `/usr/local/bin/ffmpeg`).
-3. Copy the content to your `~/.hammerspoon/init.lua` or simply link the folder.
-4. Reload Hammerspoon configuration.
+### 2. Hammerspoon
+1. Copy `.hammerspoon/init.lua` to your `~/.hammerspoon/` directory.
+2. Update `webhook`, `recBin`, and `ffmpeg` variables at the top of the file.
+3. Reload Hammerspoon config.
 
 ## ⌨️ Usage
 - **Hold `Fn`**: Start recording.
