@@ -32,7 +32,7 @@
           "parameters": [
             {
               "name": "model",
-              "value": "whisper-large-v3-turbo"
+              "value": "whisper-large-v3"
             },
             {
               "name": "response_format",
@@ -45,7 +45,7 @@
             },
             {
               "name": "prompt",
-              "value": "Mixed language speech: English, Russian, Ukrainian. Use proper punctuation, capitalization, and keep technical terms as spoken. Точки, запятые и заглавные буквы обязательны. Крапки, коми та великі літери обов'язкові."
+              "value": "Привет, это технический апдейт. Сьогоднi ми задеплоїли нову версию в production. Check logs for details. Здається, системный конфиг подтянулся корректно."
             }
           ]
         },
@@ -119,7 +119,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "3778208d-765f-4cd3-9a28-35a2e2f35b26",
+  "versionId": "7290c62f-83eb-4e92-a341-5fa04bc04953",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "9d91b5b48cee063f757f67eac73faa7d2cdae20cde0255600d717651d165d38d"
