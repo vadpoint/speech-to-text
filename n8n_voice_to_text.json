@@ -42,6 +42,10 @@
               "parameterType": "formBinaryData",
               "name": "file",
               "inputDataFieldName": "=file"
+            },
+            {
+              "name": "prompt",
+              "value": "Mixed language speech: English, Russian, Ukrainian. Use proper punctuation, capitalization, and keep technical terms as spoken. Точки, запятые и заглавные буквы обязательны. Крапки, коми та великі літери обов'язкові."
             }
           ]
         },
@@ -115,7 +119,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "399c1a37-d1c9-49a8-bad8-a18c05d13dd8",
+  "versionId": "3778208d-765f-4cd3-9a28-35a2e2f35b26",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "9d91b5b48cee063f757f67eac73faa7d2cdae20cde0255600d717651d165d38d"
