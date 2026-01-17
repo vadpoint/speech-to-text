@@ -8,7 +8,6 @@ WEBHOOK_URL = "http://localhost:5678/webhook-test/824c2fd9-a2a6-41c4-8578-48dfa6
 AUDIO_FILE = "res/voice.opus"
 
 # Сюда можно вписать любой промпт для теста
-TEST_PROMPT = "Привет, это технический апдейт. Сьогоднi ми задеплоїли нову версию в production. Check logs for details. Здається, системный конфиг подтянулся корректно."
 
 def main():
     if not os.path.exists(AUDIO_FILE):
@@ -24,7 +23,6 @@ def main():
             }
             data = {
                 'format': 'opus',
-                'prompt': TEST_PROMPT
             }
             
             response = requests.post(WEBHOOK_URL, files=files, data=data)

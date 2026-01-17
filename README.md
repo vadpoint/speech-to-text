@@ -41,6 +41,30 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 3. Copy the content to your `~/.hammerspoon/init.lua` or simply link the folder.
 4. Reload Hammerspoon configuration.
 
+## ⚙️ Customization
+
+### 1. Adjusting the Transcription Prompt
+You can customize how Whisper processes your speech (e.g., adding preferred languages, technical terms, or formatting rules) by editing the **HTTP Request** node in n8n:
+1. Open your workflow in n8n.
+2. Double-click the **HTTP Request** node.
+3. Find the `prompt` parameter in the **Body Parameters** section.
+4. Update the value to include your own context.
+
+**Example prompt:**
+> "Привет, это технический апдейт. Сьогоднi ми задеплоїли нову версию в production. Check logs for details. Здається, системный конфиг подтянулся корректно."
+
+**Why change it?**
+- **Languages**: Add text in the languages you use most (e.g., Russian, Ukrainian) to "guide" Whisper.
+- **Technical Terms**: Add specific jargon (e.g., "Kubernetes", "React") to ensure they are spelled correctly.
+- **Punctuation**: Whisper often mirrors the style of the prompt.
+
+### 2. Editing JSON directly
+If you prefer editing the configuration file before importing:
+1. Open `n8n_voice_to_text.json` in a text editor.
+2. Search for the `prompt` key.
+3. Update the `value` string.
+4. Save and import the file into n8n.
+
 ## ⌨️ Usage
 - **Hold `Fn`**: Start recording.
 - **Key + other key**: If you press any other key while holding `Fn`, recording is cancelled (useful for avoidance).
