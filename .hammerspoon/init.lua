@@ -71,8 +71,13 @@ local function pasteWithRestore(text)
   -- Anti-Hallucination Filter
   local lowText = text:lower():gsub("[%s%p]", "") -- remove spaces/punctuation
   local hallucinations = {
-    ["thankyou"] = true,
+    ["subtitlesbytheamaraorgcommunity"] = true,
+    ["здаєтьсясистемныйконфигподтянулсякорректно"] = true,
+    ["Здається, системный конфиг подтянулся корректно."] = true,
+    ["Продолжениеследует"] = true,
+    ["thankyouforwatching"] = true,
     ["thanksforwatching"] = true,
+    ["thankyou"] = true,
     ["yes"] = true,
     ["you"] = true,
     ["bye"] = true,
@@ -84,6 +89,9 @@ local function pasteWithRestore(text)
     print("Ignored hallucination: " .. text)
     return
   end
+
+  -- Add a space after the text to separate it from the next dictation
+  text = text .. " "
 
   focusTarget()
   local old = hs.pasteboard.getContents()
@@ -112,11 +120,18 @@ local function encodeAndSend()
         end
         local text = extractText(out2)
         pasteWithRestore(text)
-      end, {
+      end, (function()
+        local args = {
         "-sS", "-f", "-X", "POST", webhook,
         "-F", "file=@" .. opusFile .. ";type=audio/opus",
         "-F", "format=opus"
-      })
+        }
+        if _G.pttVoice.language == "uk" then
+          table.insert(args, "-F")
+          table.insert(args, "language=uk")
+        end
+        return args
+      end)())
       sendTask:start()
     end, {
       "-y", "-i", wavFile, "-vn", "-ac", "1", "-ar", "16000",
@@ -138,6 +153,14 @@ local function startRecording()
   recording = true
   recStartTime = hs.timer.secondsSinceEpoch()
   
+  -- Check for Ukrainian toggle (Fn + Shift)
+  local mods = hs.eventtap.checkKeyboardModifiers()
+  if mods.shift then
+    _G.pttVoice.language = "uk"
+  else
+    _G.pttVoice.language = nil
+  end
+
   targetApp = hs.application.frontmostApplication()
   targetWin = hs.window.frontmostWindow()
 
@@ -147,7 +170,11 @@ local function startRecording()
   end, {"--out", wavFile})
   
   recTask:start()
+  if _G.pttVoice.language == "uk" then
+    hs.alert.show("Listening (UK)...")
+  else
   hs.alert.show("Listening...")
+end
 end
 
 local function stopRecording(shouldProcess)

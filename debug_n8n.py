@@ -23,8 +23,9 @@ def main():
             }
             data = {
                 'format': 'opus',
+                # 'language': 'uk'
             }
-            
+
             response = requests.post(WEBHOOK_URL, files=files, data=data)
             
             print(f"Status Code: {response.status_code}")

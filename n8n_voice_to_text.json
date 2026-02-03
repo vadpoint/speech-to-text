@@ -32,7 +32,7 @@
           "parameters": [
             {
               "name": "model",
-              "value": "whisper-large-v3"
+              "value": "={{ $json.body.language == 'uk' ? 'whisper-large-v3':'whisper-large-v3-turbo'}}"
             },
             {
               "name": "response_format",
@@ -45,7 +45,11 @@
             },
             {
               "name": "prompt",
-              "value": "Привет, это технический апдейт. Сьогоднi ми задеплоїли нову версию в production. Check logs for details. Здається, системный конфиг подтянулся корректно."
+              "value": "={{ $json.body.language == 'uk' ? \n'It might be English text. Це може бути український текст. Dont censor or translate anything.' :\n'It might be English text. Это может быть русский текст. Dont censor or translate anything.' }}"
+            },
+            {
+              "name": "={{ $json.body.language === 'uk' ? 'language' : 'temperature' }}",
+              "value": "={{ $json.body.language == 'uk' ? 'uk' :'0' }}"
             }
           ]
         },
@@ -119,7 +123,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7290c62f-83eb-4e92-a341-5fa04bc04953",
+  "versionId": "145eaf42-74e0-4774-bb9e-111f49f8e924",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "9d91b5b48cee063f757f67eac73faa7d2cdae20cde0255600d717651d165d38d"
