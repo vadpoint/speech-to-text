@@ -71,5 +71,39 @@ If you prefer editing the configuration file before importing:
 - **Release `Fn`**: Finish and transcribe.
 - **Short press**: If held for less than 0.6s, recording is ignored.
 
+## 🔍 Debugging
+
+If the transcription is not working as expected or contains "hallucinations", follow these steps to troubleshoot and fine-tune the system.
+
+### 1. Filtering Hallucinations (Blocked Words)
+Whisper sometimes "hallucinates" common phrases (like "Thank you for watching") when there is silence or background noise. You can block these specific strings:
+1. Open `init-production.lua`.
+2. Locate the `hallucinations` table (around line 73).
+3. Add the unwanted phrase as a key with `true` as the value:
+   ```lua
+   ["newhallucination"] = true,
+   ```
+   *Note: The script removes spaces and converts text to lowercase before checking this table.*
+
+### 2. Fine-Tuning the Prompt (n8n)
+The `prompt` parameter in n8n significantly influences Whisper's accuracy, language detection, and formatting.
+1. Open your workflow in **n8n**.
+2. Double-click the **HTTP Request** node.
+3. Locate the `prompt` field in the **Body Parameters**.
+4. Adjust the text to include examples of the technical terms, languages, or punctuation styles you want Whisper to follow.
+
+### 3. Debugging with `debug_n8n.py`
+If you encounter a specific recording that Whisper transcribes poorly, you can debug it locally:
+1. Every recording is temporarily stored at `/tmp/voice.opus`.
+2. Copy this file to the project's `res/` directory:
+   ```bash
+   cp /tmp/voice.opus /Users/onetiger/projects/n8n/speech-to-text/res/voice.opus
+   ```
+3. Use the `debug_n8n.py` script to send this specific file to n8n repeatedly while you experiment with different prompts:
+   ```bash
+   python3 debug_n8n.py
+   ```
+4. Adjust the `prompt` in `debug_n8n.py` or directly in n8n until the output meets your expectations.
+
 ## 🤝 Attribution
 Created for a personalized voice-typing workflow that bridges local macOS automation with cloud-based LLM transcription.

@@ -44,12 +44,12 @@
               "inputDataFieldName": "=file"
             },
             {
-              "name": "prompt",
-              "value": "={{ $json.body.language == 'uk' ? \n'It might be English text. Це може бути український текст. Dont censor or translate anything.' :\n'It might be English text. Это может быть русский текст. Dont censor or translate anything.' }}"
-            },
-            {
               "name": "={{ $json.body.language === 'uk' ? 'language' : 'temperature' }}",
               "value": "={{ $json.body.language == 'uk' ? 'uk' :'0' }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ \n\n$json.body.language == 'uk' ? \n$json.body.prompt ? $json.body.prompt : \n'It might be English text. Це може бути український текст.' :\n$json.body.prompt ? $json.body.prompt : \n'This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего не переводить, дебил, блядь. Сохраняй слова в том виде, в котором я отдал. Не вздумай ничего менять или вырезать. Дебил, блядь.'\n}}"
             }
           ]
         },
@@ -123,7 +123,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "145eaf42-74e0-4774-bb9e-111f49f8e924",
+  "versionId": "d0bfeeab-990b-43a4-ad49-56df4493cd08",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "9d91b5b48cee063f757f67eac73faa7d2cdae20cde0255600d717651d165d38d"

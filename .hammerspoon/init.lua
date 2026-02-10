@@ -73,10 +73,13 @@ local function pasteWithRestore(text)
   local hallucinations = {
     ["subtitlesbytheamaraorgcommunity"] = true,
     ["здаєтьсясистемныйконфигподтянулсякорректно"] = true,
-    ["Здається, системный конфиг подтянулся корректно."] = true,
-    ["Продолжениеследует"] = true,
+    ["Этоможетбытьрусскийтекст"] = true,
+    ["Субтитрысоздавалdimatorzok"] = true,
     ["thankyouforwatching"] = true,
     ["thanksforwatching"] = true,
+    ["Продолжениеследует"] = true,
+    ["Дякуюзаперегляд"] = true,
+    ["Дякую"] = true,
     ["thankyou"] = true,
     ["yes"] = true,
     ["you"] = true,
@@ -217,7 +220,7 @@ local function onFlagsChanged(e)
 
   if isFn and not fnDown then
     fnDown = true
-    _G.pttVoice.delayTimer = hs.timer.doAfter(0.4, function()
+    _G.pttVoice.delayTimer = hs.timer.doAfter(0.3, function()
       _G.pttVoice.delayTimer = nil
       startRecording()
     end)

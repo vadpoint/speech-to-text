@@ -3,9 +3,10 @@ import os
 import sys
 
 # Configuration from init.lua
-# WEBHOOK_URL = "http://localhost:5678/webhook/824c2fd9-a2a6-41c4-8578-48dfa63601ea"
-WEBHOOK_URL = "http://localhost:5678/webhook-test/824c2fd9-a2a6-41c4-8578-48dfa63601ea"
+WEBHOOK_URL = "http://localhost:5678/webhook/824c2fd9-a2a6-41c4-8578-48dfa63601ea"
+# WEBHOOK_URL = "http://localhost:5678/webhook-test/824c2fd9-a2a6-41c4-8578-48dfa63601ea"
 AUDIO_FILE = "res/voice.opus"
+
 
 # Сюда можно вписать любой промпт для теста
 
@@ -24,16 +25,18 @@ def main():
             data = {
                 'format': 'opus',
                 # 'language': 'uk'
+                'prompt': 'This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего не переводить, дебил, блядь.'
             }
 
             response = requests.post(WEBHOOK_URL, files=files, data=data)
-            
+
             print(f"Status Code: {response.status_code}")
             print("Response:")
             print(response.text)
-            
+
     except Exception as e:
         print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()
