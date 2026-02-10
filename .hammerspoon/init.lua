@@ -1,8 +1,13 @@
--- PTT Fn key (Delayed) -> record -> encode -> send to n8n -> paste
+-- PTT Fn key (Delayed) -> record -> encode -> transcribe with Groq -> paste
 -- Features:
 -- 1. Anti-Hallucination (Empty/Garbage filter)
--- 2. Multi-language Prompt (EN/RU)
+-- 2. Multi-language Prompt (EN/RU/UK)
 -- 3. Robust EventTap Watchdog with Global Persistence
+-- 4. Direct Groq API integration (no HTTP server, no Python needed)
+
+-- ====== CONFIGURATION ======
+local GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"  -- Put your Groq API key here
+-- ===========================
 
 -- GLOBAL TABLE to prevent Garbage Collection (The #1 cause of "stopping after a while")
 _G.pttVoice = _G.pttVoice or {}
@@ -14,8 +19,6 @@ local curlBin = "/usr/bin/curl"
 
 local wavFile  = "/tmp/voice.wav"
 local opusFile = "/tmp/voice.opus"
-
-local webhook = "http://localhost:5678/webhook/824c2fd9-a2a6-41c4-8578-48dfa63601ea"
 
 local recTask, encTask, sendTask = nil, nil, nil
 local recording = false
@@ -79,6 +82,7 @@ local function pasteWithRestore(text)
     ["thanksforwatching"] = true,
     ["Продолжениеследует"] = true,
     ["Дякуюзаперегляд"] = true,
+    ["Сохраняй"] = true,
     ["Дякую"] = true,
     ["thankyou"] = true,
     ["yes"] = true,
@@ -105,6 +109,14 @@ local function pasteWithRestore(text)
   end)
 end
 
+local function getPrompt(language)
+  if language == "uk" then
+    return "It might be English text. Це може бути український текст."
+  else
+    return "This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего не переводить, дебил, блядь. Сохраняй слова в том виде, в котором я отдал. Не вздумай ничего менять или вырезать. Дебил, блядь."
+  end
+end
+
 local function encodeAndSend()
   hs.timer.doAfter(0.10, function()
     os.remove(opusFile)
@@ -115,26 +127,40 @@ local function encodeAndSend()
         return
       end
       
+      -- Send to Groq API directly
+      local language = _G.pttVoice.language
+      local model = (language == "uk") and "whisper-large-v3" or "whisper-large-v3-turbo"
+      local prompt = getPrompt(language)
+      
+      local args = {
+        "-sS", "-f", "-X", "POST",
+        "https://api.groq.com/openai/v1/audio/transcriptions",
+        "-H", "Authorization: Bearer " .. GROQ_API_KEY,
+        "-F", "file=@" .. opusFile .. ";type=audio/opus",
+        "-F", "model=" .. model,
+        "-F", "response_format=text",
+        "-F", "prompt=" .. prompt
+      }
+      
+      -- Add language or temperature parameter
+      if language == "uk" then
+        table.insert(args, "-F")
+        table.insert(args, "language=uk")
+      else
+        table.insert(args, "-F")
+        table.insert(args, "temperature=0")
+      end
+      
       sendTask = hs.task.new(curlBin, function(code2, out2, err2)
         sendTask = nil
         if code2 ~= 0 then
-          hs.alert.show("Send failed")
+          hs.alert.show("Transcription failed")
+          print("Groq API error: " .. err2)
           return
         end
         local text = extractText(out2)
         pasteWithRestore(text)
-      end, (function()
-        local args = {
-        "-sS", "-f", "-X", "POST", webhook,
-        "-F", "file=@" .. opusFile .. ";type=audio/opus",
-        "-F", "format=opus"
-        }
-        if _G.pttVoice.language == "uk" then
-          table.insert(args, "-F")
-          table.insert(args, "language=uk")
-        end
-        return args
-      end)())
+      end, args)
       sendTask:start()
     end, {
       "-y", "-i", wavFile, "-vn", "-ac", "1", "-ar", "16000",
@@ -176,8 +202,8 @@ local function startRecording()
   if _G.pttVoice.language == "uk" then
     hs.alert.show("Listening (UK)...")
   else
-  hs.alert.show("Listening...")
-end
+    hs.alert.show("Listening...")
+  end
 end
 
 local function stopRecording(shouldProcess)
@@ -292,5 +318,5 @@ end)
 -- Initial Start
 restartTaps()
 
-hs.alert.show("Voice PTT Reloaded (Global Mode)")
-print("[PTT] Script loaded fully.")
+hs.alert.show("Voice PTT Reloaded (Direct Groq API)")
+print("[PTT] Script loaded fully (Direct Groq API mode).")

@@ -18,58 +18,70 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 ## 📦 Requirements
 - **macOS**
 - [Hammerspoon](https://www.hammerspoon.org/)
-- [n8n](https://n8n.io/)
 - [FFmpeg](https://ffmpeg.org/) (installed via `brew install ffmpeg`)
 - [Groq API Key](https://console.groq.com/)
 - A CLI recording utility (e.g., `coreaudio-rec` or similar).
 
 ## 🛠 Installation
 
-### 1. n8n Workflow
+### Simple Lua Script (Recommended - No Dependencies!)
+
+This is the simplest approach: just one Lua file that talks directly to Groq API.
+
+1. **Get your Groq API key** from [console.groq.com](https://console.groq.com/)
+
+2. **Configure the script:**
+   - Open `init.lua` in this project
+   - Find the line: `local GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"`
+   - Replace with your actual API key
+
+3. **Copy to Hammerspoon:**
+   ```bash
+   cp ~/projects/n8n/speech-to-text/init.lua ~/.hammerspoon/init.lua
+   ```
+   Or use it directly from this directory in your Hammerspoon config.
+
+4. **Reload Hammerspoon** configuration.
+
+**That's it!** No Python, no n8n, no HTTP servers — just pure Lua + curl.
+
+---
+
+### Alternative: n8n Workflow (Legacy)
+
+If you prefer using n8n as a middleware:
+
 1. Import `n8n_voice_to_text.json` into your n8n instance.
-2. Configure the **HTTP Request** node:
-   - Use your Groq API credentials.
-   - The workflow uses `whisper-large-v3-turbo`.
-3. Activate the workflow and copy the **Production Webhook URL**.
-
-### 2. Hammerspoon Script
-1. The script is located in `.hammerspoon/init.lua`.
-2. Open it and update the following variables:
-   - `webhook`: Paste your n8n webhook URL here.
-   - `recBin`: Path to your recording CLI tool (default: `~/coreaudio-rec/ptt_rec`).
-   - `ffmpeg`: Path to your ffmpeg binary (default: `/usr/local/bin/ffmpeg`).
-3. Copy the content to your `~/.hammerspoon/init.lua` or simply link the folder.
-4. Reload Hammerspoon configuration.
-
-## ⚙️ Customization
-
-### 1. Adjusting the Transcription Prompt
-You can customize how Whisper processes your speech (e.g., adding preferred languages, technical terms, or formatting rules) by editing the **HTTP Request** node in n8n:
-1. Open your workflow in n8n.
-2. Double-click the **HTTP Request** node.
-3. Find the `prompt` parameter in the **Body Parameters** section.
-4. Update the value to include your own context.
-
-**Example prompt:**
-> "Привет, это технический апдейт. Сьогоднi ми задеплоїли нову версию в production. Check logs for details. Здається, системный конфиг подтянулся корректно."
-
-**Why change it?**
-- **Languages**: Add text in the languages you use most (e.g., Russian, Ukrainian) to "guide" Whisper.
-- **Technical Terms**: Add specific jargon (e.g., "Kubernetes", "React") to ensure they are spelled correctly.
-- **Punctuation**: Whisper often mirrors the style of the prompt.
-
-### 2. Editing JSON directly
-If you prefer editing the configuration file before importing:
-1. Open `n8n_voice_to_text.json` in a text editor.
-2. Search for the `prompt` key.
-3. Update the `value` string.
-4. Save and import the file into n8n.
+2. Configure the **HTTP Request** node with your Groq API credentials.
+3. Activate the workflow and copy the webhook URL.
+4. Use `init-production.lua` instead of `init.lua`, updating the `webhook` variable.
 
 ## ⌨️ Usage
 - **Hold `Fn`**: Start recording.
-- **Key + other key**: If you press any other key while holding `Fn`, recording is cancelled (useful for avoidance).
+- **Hold `Fn + Shift`**: Start recording in Ukrainian mode.
+- **Key + other key**: If you press any other key while holding `Fn`, recording is cancelled.
 - **Release `Fn`**: Finish and transcribe.
 - **Short press**: If held for less than 0.6s, recording is ignored.
+
+## ⚙️ Customization
+
+### Adjusting the Transcription Prompt
+You can customize how Whisper processes your speech by editing the `getPrompt()` function in `init.lua`:
+
+```lua
+local function getPrompt(language)
+  if language == "uk" then
+    return "It might be English text. Це може бути український текст."
+  else
+    return "Your custom prompt here..."
+  end
+end
+```
+
+**Why change it?**
+- **Languages**: Add text in the languages you use most to "guide" Whisper.
+- **Technical Terms**: Add specific jargon (e.g., "Kubernetes", "React") to ensure correct spelling.
+- **Punctuation**: Whisper often mirrors the style of the prompt.
 
 ## 🔍 Debugging
 
@@ -77,7 +89,7 @@ If the transcription is not working as expected or contains "hallucinations", fo
 
 ### 1. Filtering Hallucinations (Blocked Words)
 Whisper sometimes "hallucinates" common phrases (like "Thank you for watching") when there is silence or background noise. You can block these specific strings:
-1. Open `init-production.lua`.
+1. Open `init.lua`.
 2. Locate the `hallucinations` table (around line 73).
 3. Add the unwanted phrase as a key with `true` as the value:
    ```lua
@@ -85,25 +97,29 @@ Whisper sometimes "hallucinates" common phrases (like "Thank you for watching") 
    ```
    *Note: The script removes spaces and converts text to lowercase before checking this table.*
 
-### 2. Fine-Tuning the Prompt (n8n)
-The `prompt` parameter in n8n significantly influences Whisper's accuracy, language detection, and formatting.
-1. Open your workflow in **n8n**.
-2. Double-click the **HTTP Request** node.
-3. Locate the `prompt` field in the **Body Parameters**.
-4. Adjust the text to include examples of the technical terms, languages, or punctuation styles you want Whisper to follow.
+### 2. Fine-Tuning the Prompt
+The `prompt` parameter significantly influences Whisper's accuracy, language detection, and formatting.
+1. Open `init.lua`.
+2. Locate the `getPrompt()` function (around line 117).
+3. Adjust the returned text to include examples of technical terms, languages, or punctuation styles you want Whisper to follow.
 
-### 3. Debugging with `debug_n8n.py`
-If you encounter a specific recording that Whisper transcribes poorly, you can debug it locally:
+### 3. Debugging with Saved Audio
+If you encounter a specific recording that Whisper transcribes poorly:
 1. Every recording is temporarily stored at `/tmp/voice.opus`.
-2. Copy this file to the project's `res/` directory:
+2. Copy this file to test it:
    ```bash
-   cp /tmp/voice.opus /Users/onetiger/projects/n8n/speech-to-text/res/voice.opus
+   cp /tmp/voice.opus ~/Desktop/test.opus
    ```
-3. Use the `debug_n8n.py` script to send this specific file to n8n repeatedly while you experiment with different prompts:
+3. Test directly with curl to experiment with different prompts:
    ```bash
-   python3 debug_n8n.py
+   curl -X POST https://api.groq.com/openai/v1/audio/transcriptions \
+     -H "Authorization: Bearer YOUR_API_KEY" \
+     -F "file=@test.opus;type=audio/opus" \
+     -F "model=whisper-large-v3-turbo" \
+     -F "response_format=text" \
+     -F "prompt=Your test prompt here"
    ```
-4. Adjust the `prompt` in `debug_n8n.py` or directly in n8n until the output meets your expectations.
+
 
 ## 🤝 Attribution
 Created for a personalized voice-typing workflow that bridges local macOS automation with cloud-based LLM transcription.
