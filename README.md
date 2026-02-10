@@ -95,7 +95,7 @@ Whisper sometimes "hallucinates" common phrases (like "Thank you for watching") 
    ```lua
    ["newhallucination"] = true,
    ```
-   *Note: The script removes spaces and converts text to lowercase before checking this table.*
+   *Note: The script removes spaces and converts text to lowercase before checking this table. Somehow Cyrillic capital letters don't convert. *
 
 ### 2. Fine-Tuning the Prompt
 The `prompt` parameter significantly influences Whisper's accuracy, language detection, and formatting.
