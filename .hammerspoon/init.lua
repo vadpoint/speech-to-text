@@ -13,7 +13,7 @@ local GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"  -- Put your Groq API key here
 _G.pttVoice = _G.pttVoice or {}
 
 local home = os.getenv("HOME")
-local recBin  = home .. "/coreaudio-rec/ptt_rec"
+local recBin  = "/usr/local/bin/sox"
 local ffmpeg  = "/usr/local/bin/ffmpeg"
 local curlBin = "/usr/bin/curl"
 
@@ -196,7 +196,7 @@ local function startRecording()
   os.remove(wavFile)
   recTask = hs.task.new(recBin, function()
     recTask = nil
-  end, {"--out", wavFile})
+  end, {"-d", wavFile})
   
   recTask:start()
   if _G.pttVoice.language == "uk" then

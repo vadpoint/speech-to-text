@@ -20,7 +20,8 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 - [Hammerspoon](https://www.hammerspoon.org/)
 - [FFmpeg](https://ffmpeg.org/) (installed via `brew install ffmpeg`)
 - [Groq API Key](https://console.groq.com/)
-- A CLI recording utility (e.g., `coreaudio-rec` or similar).
+- **SoX** (Recommended/Default): Install via `brew install sox`.
+  - *Note: The script is pre-configured for SoX. You can use other CLI tools (like `coreaudio-rec`) by editing the `recBin` path in `init.lua`.*
 
 ## 🛠 Installation
 
@@ -36,10 +37,18 @@ This is the simplest approach: just one Lua file that talks directly to Groq API
    - Replace with your actual API key
 
 3. **Copy to Hammerspoon:**
+   
+   **Option A: Direct Copy** (Easiest)
    ```bash
-   cp ~/projects/n8n/speech-to-text/init.lua ~/.hammerspoon/init.lua
+   cp /path/to/your/project/speech-to-text/init.lua ~/.hammerspoon/init.lua
    ```
-   Or use it directly from this directory in your Hammerspoon config.
+
+   **Option B: Symbolic Link** (Recommended for developers)
+   This keeps your Hammerspoon config in sync with the repository.
+   ```bash
+   ln -s /path/to/your/project/speech-to-text/init.lua ~/.hammerspoon/init.lua
+   ```
+   *Make sure to backup your existing `init.lua` first if you have one.*
 
 4. **Reload Hammerspoon** configuration.
 
@@ -77,6 +86,16 @@ local function getPrompt(language)
   end
 end
 ```
+
+### Recording Configuration
+The script uses `sox` by default. You can change the recording arguments in the `startRecording` function inside `init.lua`:
+
+```lua
+-- current default (sox with default device)
+recTask = hs.task.new(recBin, function() ... end, {"-d", wavFile}) 
+```
+
+If you need to change input devices or audio format, modify the arguments `{ "-d", wavFile }` here.
 
 **Why change it?**
 - **Languages**: Add text in the languages you use most to "guide" Whisper.
