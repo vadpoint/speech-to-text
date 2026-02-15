@@ -20,7 +20,7 @@ A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for mac
 - [Hammerspoon](https://www.hammerspoon.org/)
 - [FFmpeg](https://ffmpeg.org/) (installed via `brew install ffmpeg`)
 - [Groq API Key](https://console.groq.com/)
-- A CLI recording utility (e.g., `coreaudio-rec` or similar).
+- **coreaudio-rec**: A low-latency recording utility (needs to be compiled from the included source).
 
 ## 🛠 Installation
 
@@ -41,7 +41,17 @@ This is the simplest approach: just one Lua file that talks directly to Groq API
    ```
    Or use it directly from this directory in your Hammerspoon config.
 
-4. **Reload Hammerspoon** configuration.
+4. **Install `coreaudio-rec`**:
+   The project includes a high-performance Swift recording utility that must be compiled:
+   ```bash
+   cd coreaudio-rec
+   swiftc ptt_rec.swift -o ptt_rec
+   mkdir -p ~/coreaudio-rec
+   cp ptt_rec ~/coreaudio-rec/
+   ```
+   *Note: If you want to keep the binary elsewhere, update the `recBin` path in `init.lua`.*
+
+5. **Reload Hammerspoon** configuration.
 
 **That's it!** No Python, no n8n, no HTTP servers — just pure Lua + curl.
 

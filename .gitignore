@@ -1,5 +1,6 @@
 .DS_Store
 *.wav
 *.opus
-/tmp/
-.idea/
+tmp/
+.idea
+.env
