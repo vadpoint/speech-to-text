@@ -182,13 +182,8 @@ local function startRecording()
   recording = true
   recStartTime = hs.timer.secondsSinceEpoch()
   
-  -- Check for Ukrainian toggle (Fn + Shift)
-  local mods = hs.eventtap.checkKeyboardModifiers()
-  if mods.shift then
-    _G.pttVoice.language = "uk"
-  else
-    _G.pttVoice.language = nil
-  end
+  -- mods are no longer checked here, handled in onFlagsChanged
+  -- Language is pre-set in _G.pttVoice.language
 
   targetApp = hs.application.frontmostApplication()
   targetWin = hs.window.frontmostWindow()
@@ -243,14 +238,27 @@ end
 local function onFlagsChanged(e)
   local flags = e:getFlags()
   local isFn = flags.fn
+  local isShift = flags.shift
+  local isCtrl = flags.ctrl
 
-  if isFn and not fnDown then
+  -- Only trigger if BOTH Fn and Shift are down
+  local triggerDown = isFn and isShift
+  
+  if triggerDown and not fnDown then
     fnDown = true
+    _G.pttVoice.language = nil -- Default language
+    
+    -- Ukrainian language activation (shift+ctrl+fn) - currently disabled
+    -- if isCtrl then
+    --   _G.pttVoice.language = "uk"
+    -- end
+
     _G.pttVoice.delayTimer = hs.timer.doAfter(0.3, function()
       _G.pttVoice.delayTimer = nil
       startRecording()
     end)
-  elseif (not isFn) and fnDown then
+  elseif (not isFn or not isShift) and fnDown then
+    -- If either trigger key is released, stop the process
     fnDown = false
     if _G.pttVoice.delayTimer then
       _G.pttVoice.delayTimer:stop()
