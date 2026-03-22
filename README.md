@@ -3,10 +3,10 @@
 A high-performance, low-latency Push-to-Talk (PTT) voice typing solution for macOS using **Hammerspoon**, **n8n**, and the **Groq API** (Whisper).
 
 ## 🚀 How it works
-1. **Hold `Fn` key**: Activates recording (after a 0.4s delay to prevent accidental triggers). 
+1. **Hold `Shift + Fn` keys**: Activates recording (after a 0.3s delay to prevent accidental triggers). 
 2. **Speak**: The script records your audio while the key is held.
-3. **Release `Fn` key**: Audio is encoded to Opus and sent to an **n8n** webhook.
-4. **Processing**: n8n sends the file to **Groq's Whisper API** for ultra-fast transcription.
+3. **Release `Shift + Fn` keys**: Audio is encoded to Opus and sent for transcription.
+4. **Processing**: The audio is processed using **Groq's Whisper API** for ultra-fast transcription.
 5. **Auto-Paste**: The result is sent back to Hammerspoon and automatically pasted into your active application.
 
 ## ✨ Features
@@ -66,10 +66,10 @@ If you prefer using n8n as a middleware:
 4. Use `init-production.lua` instead of `init.lua`, updating the `webhook` variable.
 
 ## ⌨️ Usage
-- **Hold `Fn`**: Start recording.
-- **Hold `Fn + Shift`**: Start recording in Ukrainian mode.
-- **Key + other key**: If you press any other key while holding `Fn`, recording is cancelled.
-- **Release `Fn`**: Finish and transcribe.
+- **Hold `Shift + Fn`**: Start recording.
+- **Hold `Shift + Ctrl + Fn`**: Start recording in Ukrainian mode (currently disabled in config).
+- **Key + other key**: If you press any other key while holding the trigger, recording is cancelled.
+- **Release keys**: Finish and transcribe.
 - **Short press**: If held for less than 0.6s, recording is ignored.
 
 ## ⚙️ Customization
