@@ -31,9 +31,12 @@ This is the simplest approach: just one Lua file that talks directly to Groq API
 1. **Get your Groq API key** from [console.groq.com](https://console.groq.com/)
 
 2. **Configure the script:**
-   - Open `init.lua` in this project
-   - Find the line: `local GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"`
-   - Replace with your actual API key
+   - Copy the example secrets file:
+     ```bash
+     cp hammerspoon/secrets.example.lua hammerspoon/secrets.lua
+     ```
+   - Open `hammerspoon/secrets.lua` and replace `"HERE"` with your actual API key.
+   - *Note: `secrets.lua` is ignored by Git to keep your keys private.*
 
 3. **Copy to Hammerspoon:**
    ```bash

@@ -1,0 +1,64 @@
+import requests
+import os
+import sys
+
+# Configuration
+API_KEY = "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"
+API_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
+AUDIO_FILE = "res/voice.opus"
+LANGUAGE = "en" # "en" or "uk"
+
+def get_prompt(lang):
+    if lang == "uk":
+        return "It might be English text. Це може бути український текст."
+    else:
+        # return "This transcript contains a mix of English and Russian speech. Write exactly what you hear. Do not translate. Keep all filler words and hesitations: umm, hmm, uh, э-эм, ну, м-м. Use standard spelling WITHOUT any accents or special characters like 'ы̆'. Vocabulary: accounts, self-regs, proxy, аккаунты, самореги, прокси, конфиг, блядь, сука, ебать, пиздец, хуйня, пидор. Verbatim speech only, no subtitles."
+        return "This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. Use standard spelling WITHOUT any accents or special characters like 'ы̆'. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего переводить. Сохраняй слова в том виде, в котором я отдал. Не вздумай ничего менять или вырезать. "
+
+def main():
+    if not os.path.exists(AUDIO_FILE):
+        print(f"Error: {AUDIO_FILE} not found.")
+        sys.exit(1)
+
+    print(f"Sending {AUDIO_FILE} to Groq API...")
+    
+    # Determine model based on language
+    model = "whisper-large-v3" if LANGUAGE == "uk" else "whisper-large-v3"
+    prompt = get_prompt(LANGUAGE)
+    
+    try:
+        with open(AUDIO_FILE, 'rb') as f:
+            files = {
+                'file': (os.path.basename(AUDIO_FILE), f, 'audio/opus')
+            }
+            data = {
+                'model': model,
+                'prompt': prompt,
+                'response_format': 'text' # Using text response format as per lua script
+            }
+            
+            # Additional params based on language logic in lua
+            if LANGUAGE == "uk":
+                data['language'] = 'uk'
+            else:
+                data['temperature'] = 0
+
+            headers = {
+                "Authorization": f"Bearer {API_KEY}"
+            }
+
+            response = requests.post(API_URL, headers=headers, files=files, data=data)
+
+            if response.status_code == 200:
+                print("Success!")
+                print("Response:")
+                print(response.text)
+            else:
+                print(f"Error: {response.status_code}")
+                print(response.text)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
