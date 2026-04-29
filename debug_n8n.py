@@ -24,8 +24,9 @@ def main():
             }
             data = {
                 'format': 'opus',
-                # 'language': 'uk'
-                'prompt': 'This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего не переводить, дебил, блядь.'
+                # 'language': 'uk',
+                'prompt': 'Ну, эээ, шо, короче, вот так. Umm, hmm, well, you know, like. This text can be both English and Russian with proper punctuation.'
+                # 'prompt': 'This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего не переводить, дебил, блядь.'
             }
 
             response = requests.post(WEBHOOK_URL, files=files, data=data)

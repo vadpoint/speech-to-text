@@ -5,15 +5,20 @@ import sys
 # Configuration
 API_KEY = "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"
 API_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
-AUDIO_FILE = "res/voice.opus"
+AUDIO_FILE = "/tmp/voice.opus"
 LANGUAGE = "en" # "en" or "uk"
+
+PROMPT_UK = "Ну, е-е-е, коротше, ось так. Умм, mhm, okay, well. Це текст з правильною пунктуацією."
+# PROMPT_MIXED = "Umm, hmm, well, you know, like. Ну, эээ, шо, короче, вот так. Это текст с правильной пунктуацией."
+PROMPT_MIXED = "Ну, эээ, шо, короче, вот так. Umm, hmm, well, you know, like. This text can be both English and Russian with proper punctuation."
+# PROMPT_MIXED = "This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего не переводить, дебил, блядь."
+
 
 def get_prompt(lang):
     if lang == "uk":
-        return "It might be English text. Це може бути український текст."
+        return PROMPT_UK
     else:
-        # return "This transcript contains a mix of English and Russian speech. Write exactly what you hear. Do not translate. Keep all filler words and hesitations: umm, hmm, uh, э-эм, ну, м-м. Use standard spelling WITHOUT any accents or special characters like 'ы̆'. Vocabulary: accounts, self-regs, proxy, аккаунты, самореги, прокси, конфиг, блядь, сука, ебать, пиздец, хуйня, пидор. Verbatim speech only, no subtitles."
-        return "This is a raw transcription that must preserve ALL spoken words including filler words, hesitations, and dysfluencies. Keep words like: umm, hmm, mm, mhm, uh, um, ah, ehm, well, like, you know. Use standard spelling WITHOUT any accents or special characters like 'ы̆'. It might be English text. Это может быть русский текст. Add proper punctuation. Never remove any words. Mix of Russian and English is possible and expected. Сохраняй, блядь, язык ввода. Не вздумай ничего переводить. Сохраняй слова в том виде, в котором я отдал. Не вздумай ничего менять или вырезать. "
+        return PROMPT_MIXED
 
 def main():
     if not os.path.exists(AUDIO_FILE):
