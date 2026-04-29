@@ -13,11 +13,11 @@ speechToText:start()
 hs.alert.show("Speech to text module loaded")
 
 -- Load Text Switcher Module
-local textSwitcher = require("text_switcher")
-textSwitcher.start()
-hs.alert.show("Transliteration module loaded")
+-- local textSwitcher = require("text_switcher")
+-- textSwitcher.start()
+-- hs.alert.show("Transliteration module loaded")
 
 -- Load Audio Switcher Module
-local audioSwitcher = require("audio_switcher")
-audioSwitcher.start()
-hs.alert.show("Audio Switcher module loaded")
+-- local audioSwitcher = require("audio_switcher")
+-- audioSwitcher.start()
+-- hs.alert.show("Audio Switcher module loaded")
